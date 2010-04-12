@@ -36,3 +36,7 @@ This is the first release and is currently unsuitable for any sort of production
 The tooling (yabbler.js) currently supports the Rhino javascript engine and is very under-developed. It is offered as a preview of what is to come.
 
 For example usage for both the loader and the tooling, please see the Modules 1.0 unit tests.
+
+To see the unit tests live, visit:
+XHR/eval - http://jbrantly.github.com/yabble/tests/modules1.0/index.html
+<script>/wrapped - http://jbrantly.github.com/yabble/tests/modules1.0/wrappedIndex.html
