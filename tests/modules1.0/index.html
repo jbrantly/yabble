@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<title></title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<script type="text/javascript" src="../print.js"></script>
+		<script type="text/javascript" src="../../yabble.js"></script>
+		<script type="text/javascript">
+			require.setModuleRoot('tests/absolute');
+			require.run('program', function() {
+				
+				require.reset();
+				require.setModuleRoot('tests/cyclic');
+				require.run('program', function() {				
+				
+					require.reset();
+					require.setModuleRoot('tests/determinism');
+					require.run('program', function() {	
+					
+						require.reset();
+						require.setModuleRoot('tests/exactExports');
+						require.run('program', function() {	
+						
+							require.reset();
+							require.setModuleRoot('tests/hasOwnProperty');
+							require.run('program', function() {	
+							
+								require.reset();
+								require.setModuleRoot('tests/method');
+								require.run('program', function() {	
+								
+									require.reset();
+									require.setModuleRoot('tests/missing');
+									require.run('program', function() {	
+									
+										require.reset();
+										require.setModuleRoot('tests/monkeys');
+										require.run('program', function() {	
+										
+											require.reset();
+											require.setModuleRoot('tests/nested');
+											require.run('program', function() {	
+											
+												require.reset();
+												require.setModuleRoot('tests/relative');
+												require.run('program', function() {	
+												
+													require.reset();
+													require.setModuleRoot('tests/transitive');
+													require.run('program', function() {	
+
+													});	
+												});	
+											});	
+										});		
+									});		
+								});		
+							});		
+						});					
+					});
+				});
+			});
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

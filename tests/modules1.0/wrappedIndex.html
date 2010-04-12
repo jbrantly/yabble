@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<title></title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<script type="text/javascript" src="../print.js"></script>
+		<script type="text/javascript" src="../../yabble.js"></script>
+		<script type="text/javascript">
+			require.useScriptTags();
+			require.setModuleRoot('wrappedTests/absolute');
+			require.run('program', function() {
+				
+				require.reset();
+				require.setModuleRoot('wrappedTests/cyclic');
+				require.run('program', function() {				
+				
+					require.reset();
+					require.setModuleRoot('wrappedTests/determinism');
+					require.run('program', function() {	
+					
+						require.reset();
+						require.setModuleRoot('wrappedTests/exactExports');
+						require.run('program', function() {	
+						
+							require.reset();
+							require.setModuleRoot('wrappedTests/hasOwnProperty');
+							require.run('program', function() {	
+							
+								require.reset();
+								require.setModuleRoot('wrappedTests/method');
+								require.run('program', function() {	
+								
+									require.reset();
+									require.setModuleRoot('wrappedTests/missing');
+									require.run('program', function() {	
+									
+										require.reset();
+										require.setModuleRoot('wrappedTests/monkeys');
+										require.run('program', function() {	
+										
+											require.reset();
+											require.setModuleRoot('wrappedTests/nested');
+											require.run('program', function() {	
+											
+												require.reset();
+												require.setModuleRoot('wrappedTests/relative');
+												require.run('program', function() {	
+												
+													require.reset();
+													require.setModuleRoot('wrappedTests/transitive');
+													require.run('program', function() {	
+													
+													});	
+												});	
+											});	
+										});		
+									});		
+								});		
+							});		
+						});					
+					});
+				});
+			});
+		</script>
+	</head>
+	<body>
+	</body>
+</html>
