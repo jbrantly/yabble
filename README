@@ -1,0 +1,38 @@
+A general purpose browser-side CommonJS module loader 
+
+Yabble is a general purpose browser-side CommonJS module loader. Other similar module loaders are available, but Yabble strives to be a flexible loader in a small package.
+
+** NOTE: This is an early release. See below for more information **
+
+Features:
+ * Compliant with Modules 1.0
+ * Supports async XHR/eval()
+   - Allows the use of non-transport-wrapped module code for quick development
+ * Supports script tags with a Transport format
+   - Easier debugging, potential for file concatenation
+ * Includes a tool for automatically wrapping modules in a Transport format
+ * Supports require.ensure() for lazy-loading modules
+ * Small size (<500 lines, ~13kb raw, ~4kb minified, and <2kb when minified/gzipped)
+
+Roadmap:
+ * Stability
+   - Better cross-browser compliance
+   - More unit tests
+   - Better unit testing framework
+ * Features
+   - Implement support for Modules 1.1(.1)
+   - Complete support for Transport/D
+   - Implement support for Transport/C
+   - Explicit support for concatenated Transport files in loader and tooling
+ * Loader
+   - Use loader code in tooling (no copy/paste code)
+   - Expand supported engines for tooling (node.js)
+   - Better consideration for platform (line endings, encoding, etc)
+
+Notes on the current release:
+
+This is the first release and is currently unsuitable for any sort of production work. The loader has passed the Module 1.0 unit tests on IE 6/7 and FF 3. While complete cross-browser support is a short-term goal, this release does not offer it.
+
+The tooling (yabbler.js) currently supports the Rhino javascript engine and is very under-developed. It is offered as a preview of what is to come.
+
+For example usage for both the loader and the tooling, please see the Modules 1.0 unit tests.
