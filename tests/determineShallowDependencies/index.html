@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<title></title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		
+		<script type="text/javascript" src="../../yabble.js"></script>
+		
+		<script type="text/javascript" src="../qunit.js"></script>
+		<link rel="stylesheet" href="../qunit.css" type="text/css" media="screen" />
+		
+		<script type="text/javascript">
+			
+			var tests = [
+				['simple', ['moduleA', 'moduleB']],
+				['terms', ['moduleA', 'moduleB', 'moduleC', 'moduleD', 'moduleE', 'moduleF', 'moduleG']],
+				['string', ['"\'moduleA', '"\'moduleB', '"\'moduleC"\'', '"\'moduleD"\'']],
+				['ensuresimple', ['moduleA', 'moduleC']],
+				['ensuredouble', ['moduleA']],
+				['ensureterms', ['moduleA']],
+				['ensurestrings', ['moduleA']],
+				['knownfailure', ['moduleA']]
+			];
+			
+			
+			for (var i = 0, n = tests.length; i<n; i++) {
+				test(tests[i][0], (function(test) { 
+					return function() {
+						var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+						xhr.open('GET', 'modules/'+test[0]+'.js', false);
+						xhr.send(null);
+						same(require.unit.determineShallowDependencies(xhr.responseText), test[1]);
+					};
+				})(tests[i]));
+			}
+		</script>
+	</head>
+	<body>
+		<h1 id="qunit-header">Yabble determineShallowDependencies</h1>
+		<h2 id="qunit-banner"></h2>
+		<h2 id="qunit-userAgent"></h2>
+		<ol id="qunit-tests"></ol>
+	</body>
+</html>

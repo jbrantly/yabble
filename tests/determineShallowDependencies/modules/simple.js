@@ -1,0 +1,2 @@
+require("moduleA");
+require('moduleB');

@@ -1,0 +1,268 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<title></title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		
+		<script type="text/javascript" src="../../yabble.js"></script>
+		
+		<script type="text/javascript" src="../qunit.js"></script>
+		<link rel="stylesheet" href="../qunit.css" type="text/css" media="screen" />
+		
+		<script type="text/javascript">
+			var absolutes = [
+				['moduleId', 'moduleId'],
+				['path/moduleId', 'path/moduleId'],
+				['path/path2/moduleId', 'path/path2/moduleId']
+			];
+			
+			var relativesdot = [
+				['./moduleId', 'moduleId'],
+				['./path/moduleId', 'path/moduleId'],
+				['./path/path2/moduleId', 'path/path2/moduleId']
+			];
+			
+			var relativesup1 = [
+				['../moduleId', '../moduleId'],
+				['../path/moduleId', '../path/moduleId'],
+				['../path/path2/moduleId', '../path/path2/moduleId']
+			];
+			
+			
+			
+			test("no refpath, absolute", function() {
+				var tests = [
+					['moduleId', 'moduleId'],
+					['path/moduleId', 'path/moduleId'],
+					['path/path2/moduleId', 'path/path2/moduleId']
+				];
+				
+				for (var i = 0, n = tests.length; i<n; i++) {
+					equals(require.unit.resolveModuleId(tests[i][0]), tests[i][1], tests[i][0]);
+				}
+			});
+			
+			test("no refpath, relative to current", function() {
+				var tests = [
+					['./moduleId', 'moduleId'],
+					['./path/moduleId', 'path/moduleId'],
+					['./path/path2/moduleId', 'path/path2/moduleId']
+				];
+				
+				for (var i = 0, n = tests.length; i<n; i++) {
+					equals(require.unit.resolveModuleId(tests[i][0]), tests[i][1], tests[i][0]);
+				}
+			});
+				
+			test("no refpath, relative up one", function() {
+				var tests = [
+					['../moduleId', '../moduleId'],
+					['../path/moduleId', '../path/moduleId'],
+					['../path/path2/moduleId', '../path/path2/moduleId']
+				];
+				
+				for (var i = 0, n = tests.length; i<n; i++) {
+					equals(require.unit.resolveModuleId(tests[i][0]), tests[i][1], tests[i][0]);
+				}
+			});
+				
+			test("no refpath, relative up two", function() {
+				var tests = [
+					['../../moduleId', '../../moduleId'],
+					['../../path/moduleId', '../../path/moduleId'],
+					['../../path/path2/moduleId', '../../path/path2/moduleId']
+				];
+				
+				for (var i = 0, n = tests.length; i<n; i++) {
+					equals(require.unit.resolveModuleId(tests[i][0]), tests[i][1], tests[i][0]);
+				}
+			});
+
+			test("refpath = basePath, absolute", function() {
+				var tests = [
+					['moduleId', 'moduleId'],
+					['path/moduleId', 'path/moduleId'],
+					['path/path2/moduleId', 'path/path2/moduleId']
+				];
+				
+				var basePath = 'basePath';
+				for (var i = 0, n = tests.length; i<n; i++) {
+					equals(require.unit.resolveModuleId(tests[i][0], basePath), tests[i][1], tests[i][0]);
+				}
+				
+				var basePath = 'basePath/';
+				for (var i = 0, n = tests.length; i<n; i++) {
+					equals(require.unit.resolveModuleId(tests[i][0], basePath), tests[i][1], tests[i][0]);
+				}
+			});
+
+			test("refpath = basePath, relative to current", function() {
+				var tests = [
+					['./moduleId', 'basePath/moduleId'],
+					['./path/moduleId', 'basePath/path/moduleId'],
+					['./path/path2/moduleId', 'basePath/path/path2/moduleId']
+				];
+				
+				var basePath = 'basePath';
+				for (var i = 0, n = tests.length; i<n; i++) {
+					equals(require.unit.resolveModuleId(tests[i][0], basePath), tests[i][1], tests[i][0]);
+				}
+				
+				var basePath = 'basePath/';
+				for (var i = 0, n = tests.length; i<n; i++) {
+					equals(require.unit.resolveModuleId(tests[i][0], basePath), tests[i][1], tests[i][0]);
+				}
+			});
+
+			test("refpath = basePath, relative up one", function() {
+				var tests = [
+					['../moduleId', 'moduleId'],
+					['../path/moduleId', 'path/moduleId'],
+					['../path/path2/moduleId', 'path/path2/moduleId']
+				];
+				
+				var basePath = 'basePath';
+				for (var i = 0, n = tests.length; i<n; i++) {
+					equals(require.unit.resolveModuleId(tests[i][0], basePath), tests[i][1], tests[i][0]);
+				}
+				
+				var basePath = 'basePath/';
+				for (var i = 0, n = tests.length; i<n; i++) {
+					equals(require.unit.resolveModuleId(tests[i][0], basePath), tests[i][1], tests[i][0]);
+				}
+			});
+
+			test("refpath = basePath, relative up two", function() {
+				var tests = [
+					['../../moduleId', '../moduleId'],
+					['../../path/moduleId', '../path/moduleId'],
+					['../../path/path2/moduleId', '../path/path2/moduleId']
+				];
+				
+				var basePath = 'basePath';
+				for (var i = 0, n = tests.length; i<n; i++) {
+					equals(require.unit.resolveModuleId(tests[i][0], basePath), tests[i][1], tests[i][0]);
+				}
+				
+				var basePath = 'basePath/';
+				for (var i = 0, n = tests.length; i<n; i++) {
+					equals(require.unit.resolveModuleId(tests[i][0], basePath), tests[i][1], tests[i][0]);
+				}
+			});
+
+			test("refpath = basePath, relative up three", function() {
+				var tests = [
+					['../../../moduleId', '../../moduleId'],
+					['../../../path/moduleId', '../../path/moduleId'],
+					['../../../path/path2/moduleId', '../../path/path2/moduleId']
+				];
+				
+				var basePath = 'basePath';
+				for (var i = 0, n = tests.length; i<n; i++) {
+					equals(require.unit.resolveModuleId(tests[i][0], basePath), tests[i][1], tests[i][0]);
+				}
+				
+				var basePath = 'basePath/';
+				for (var i = 0, n = tests.length; i<n; i++) {
+					equals(require.unit.resolveModuleId(tests[i][0], basePath), tests[i][1], tests[i][0]);
+				}
+			});
+
+			test("refpath = basePath/basePath2, absolute", function() {
+				var tests = [
+					['moduleId', 'moduleId'],
+					['path/moduleId', 'path/moduleId'],
+					['path/path2/moduleId', 'path/path2/moduleId']
+				];
+				
+				var basePath = 'basePath/basePath2';
+				for (var i = 0, n = tests.length; i<n; i++) {
+					equals(require.unit.resolveModuleId(tests[i][0], basePath), tests[i][1], tests[i][0]);
+				}
+				
+				var basePath = 'basePath/basePath2/';
+				for (var i = 0, n = tests.length; i<n; i++) {
+					equals(require.unit.resolveModuleId(tests[i][0], basePath), tests[i][1], tests[i][0]);
+				}
+			});
+
+			test("refpath = basePath/basePath2, relative to current", function() {
+				var tests = [
+					['./moduleId', 'basePath/basePath2/moduleId'],
+					['./path/moduleId', 'basePath/basePath2/path/moduleId'],
+					['./path/path2/moduleId', 'basePath/basePath2/path/path2/moduleId']
+				];
+				
+				var basePath = 'basePath/basePath2';
+				for (var i = 0, n = tests.length; i<n; i++) {
+					equals(require.unit.resolveModuleId(tests[i][0], basePath), tests[i][1], tests[i][0]);
+				}
+				
+				var basePath = 'basePath/basePath2/';
+				for (var i = 0, n = tests.length; i<n; i++) {
+					equals(require.unit.resolveModuleId(tests[i][0], basePath), tests[i][1], tests[i][0]);
+				}
+			});
+
+			test("refpath = basePath/basePath2, relative up one", function() {
+				var tests = [
+					['../moduleId', 'basePath/moduleId'],
+					['../path/moduleId', 'basePath/path/moduleId'],
+					['../path/path2/moduleId', 'basePath/path/path2/moduleId']
+				];
+				
+				var basePath = 'basePath/basePath2';
+				for (var i = 0, n = tests.length; i<n; i++) {
+					equals(require.unit.resolveModuleId(tests[i][0], basePath), tests[i][1], tests[i][0]);
+				}
+				
+				var basePath = 'basePath/basePath2/';
+				for (var i = 0, n = tests.length; i<n; i++) {
+					equals(require.unit.resolveModuleId(tests[i][0], basePath), tests[i][1], tests[i][0]);
+				}
+			});
+
+			test("refpath = basePath/basePath2, relative up two", function() {
+				var tests = [
+					['../../moduleId', 'moduleId'],
+					['../../path/moduleId', 'path/moduleId'],
+					['../../path/path2/moduleId', 'path/path2/moduleId']
+				];
+				
+				var basePath = 'basePath/basePath2';
+				for (var i = 0, n = tests.length; i<n; i++) {
+					equals(require.unit.resolveModuleId(tests[i][0], basePath), tests[i][1], tests[i][0]);
+				}
+				
+				var basePath = 'basePath/basePath2/';
+				for (var i = 0, n = tests.length; i<n; i++) {
+					equals(require.unit.resolveModuleId(tests[i][0], basePath), tests[i][1], tests[i][0]);
+				}
+			});
+
+			test("refpath = basePath/basePath2, relative up three", function() {
+				var tests = [
+					['../../../moduleId', '../moduleId'],
+					['../../../path/moduleId', '../path/moduleId'],
+					['../../../path/path2/moduleId', '../path/path2/moduleId']
+				];
+				
+				var basePath = 'basePath/basePath2';
+				for (var i = 0, n = tests.length; i<n; i++) {
+					equals(require.unit.resolveModuleId(tests[i][0], basePath), tests[i][1], tests[i][0]);
+				}
+				
+				var basePath = 'basePath/basePath2/';
+				for (var i = 0, n = tests.length; i<n; i++) {
+					equals(require.unit.resolveModuleId(tests[i][0], basePath), tests[i][1], tests[i][0]);
+				}
+			});
+		</script>
+	</head>
+	<body>
+		<h1 id="qunit-header">Yabble resolveModuleId</h1>
+		<h2 id="qunit-banner"></h2>
+		<h2 id="qunit-userAgent"></h2>
+		<ol id="qunit-tests"></ol>
+	</body>
+</html>
