@@ -11,18 +11,11 @@
 		<script type="text/javascript" src="../print.js"></script>
 		
 		<script type="text/javascript">
+			require.useScriptTags();
+			
 			var tests = [
-				['absolute', 1],
-				['cyclic', 4],
-				['determinism', 1],
-				['exactExports', 1],
-				['hasOwnProperty', 0],
-				['method', 3],
-				['missing', 1],
-				['monkeys', 1],
-				['nested', 1],
-				['relative', 1],
-				['transitive', 1]
+				['module', 9],
+				['main', 3]
 			];
 
 			for (var i = 0, n = tests.length; i<n; i++) {
@@ -32,7 +25,7 @@
 					return function() {
 						stop();
 						require.reset();
-						require.setModuleRoot('tests/' + testName);
+						require.setModuleRoot('wrappedTests/' + testName);
 						require.run('program');
 					};
 				})(testName));
@@ -41,7 +34,7 @@
 		</script>
 	</head>
 	<body>
-		<h1 id="qunit-header">Yabble Modules/1.0 Unit Tests</h1>
+		<h1 id="qunit-header">Yabble Modules/1.1.1 Unit Tests (Wrapped Modules)</h1>
 		<h2 id="qunit-banner"></h2>
 		<h2 id="qunit-userAgent"></h2>
 		<ol id="qunit-tests"></ol>

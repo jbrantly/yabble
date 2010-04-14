@@ -35,7 +35,8 @@
 		_modules,
 		_callbacks,
 		_fetchFunc,
-		_timeoutLength = 20000;
+		_timeoutLength = 20000,
+		_mainProgram;
 
 		
 	var head = document.getElementsByTagName('head')[0];
@@ -78,28 +79,52 @@
 		};
 	}
 
+	// Array convenience functions
+	var indexOf = function(arr, val) {
+		for (var i = arr.length; i--;) {
+			if (arr[i] == val) { return i; }
+		}
+		return -1;
+	};
+	
+	var removeWhere = function(arr, func) {
+		var i = 0;
+		while (i < arr.length) {
+			if (func.call(null, arr[i], i) === true) {
+				arr.splice(i, 1);
+			}
+			else {
+				i++;	
+			}
+		}
+	};
+	
+	var combinePaths = function(relPath, refPath) {
+		var relPathParts = relPath.split('/');
+		refPath = refPath || '';
+		if (refPath.length && refPath.charAt(refPath.length-1) != '/') {
+			refPath += '/';
+		}
+		var refPathParts = refPath.split('/');
+		refPathParts.pop();
+		var part;
+		while (part = relPathParts.shift()) {
+			if (part == '.') { continue; }
+			else if (part == '..' 
+				&& refPathParts.length 
+				&& refPathParts[refPathParts.length-1] != '..') { refPathParts.pop(); }
+			else { refPathParts.push(part); }
+		}
+		return refPathParts.join('/');
+	};
+	
 	// Takes a relative path to a module and resolves it according to the reference path
 	var resolveModuleId = Yabble.unit.resolveModuleId = function(relModuleId, refPath) {
 		if (relModuleId.charAt(0) != '.') {
 			return relModuleId;
 		}
 		else {
-			var relativeIdParts = relModuleId.split('/');
-			refPath = refPath || '';
-			if (refPath.length && refPath.charAt(refPath.length-1) != '/') {
-				refPath += '/';
-			}
-			var refPathParts = refPath.split('/');
-			refPathParts.pop();
-			var part;
-			while (part = relativeIdParts.shift()) {
-				if (part == '.') { continue; }
-				else if (part == '..' 
-					&& refPathParts.length 
-					&& refPathParts[refPathParts.length-1] != '..') { refPathParts.pop(); }
-				else { refPathParts.push(part); }
-			}
-			return refPathParts.join('/');
+			return combinePaths(relModuleId, refPath);
 		}
 	};
 	
@@ -135,11 +160,11 @@
 			var moduleId = resolveModuleId(deps[i], refPath),
 				module = getModule(moduleId);
 
-			if (!areDeepDepsDefined(module)) {
+			if (!areDeepDepsDefined(moduleId)) {
 				unreadyModules.push(moduleId);
 			}
 		}
-		
+
 		if (unreadyModules.length) {
 			addCallback(unreadyModules, function() {
 				cb(createRequireFunc(refPath));
@@ -147,7 +172,9 @@
 			queueModules(unreadyModules);
 		}
 		else {
-			setTimeout(cb, 0);
+			setTimeout(function() {
+				cb(createRequireFunc(refPath));
+			}, 0);
 		}
 	};
 	
@@ -168,8 +195,23 @@
 			
 			if (!module.exports) {
 				module.exports = {};
-				var moduleDir = moduleId.substring(0, moduleId.lastIndexOf('/')+1);
-				module.factory(createRequireFunc(moduleDir), module.exports);
+				var moduleDir = moduleId.substring(0, moduleId.lastIndexOf('/')+1),
+					injects = module.injects,
+					args = [];
+			
+				for (var i = 0, n = injects.length; i<n; i++) {
+					if (injects[i] == 'require') {
+						args.push(createRequireFunc(moduleDir));
+					}
+					else if (injects[i] == 'exports') {
+						args.push(module.exports);
+					}
+					else if (injects[i] == 'module') {
+						args.push(module.module);
+					}
+				}
+				
+				module.factory.apply(null, args);
 			}
 			return module.exports;
 		};
@@ -177,6 +219,10 @@
 		require.ensure = function(deps, cb) {
 			ensureImpl(deps, cb, refPath);
 		};
+
+		if (_mainProgram != null) {
+			require.main = getModule(_mainProgram).module;
+		}
 		
 		return require;
 	};
@@ -198,7 +244,6 @@
 	// can more or less safely run the module factory function)
 	var areDeepDepsDefined = function(moduleId) {
 		var visitedModules = {};
-		var self = this;
 		var recurse = function(moduleId) {
 			if (visitedModules[moduleId] == true) { return true; }
 			visitedModules[moduleId] = true;
@@ -368,11 +413,55 @@
 		head.appendChild(scriptEl);
 	};
 	
+	var normalizeTransport = function() {
+		var transport = {modules: []};
+		var standardInjects = ['require', 'exports', 'module'];
+		if (typeof arguments[0] == 'object') { // Transport/D
+			transport.deps = arguments[1] || [];
+			var moduleDefs = arguments[0];
+			forIn(moduleDefs, function(moduleId) {
+				var module = {
+					id: moduleId
+				};
+				
+				if (typeof moduleDefs[moduleId] == 'function') {
+					module.factory = moduleDefs[moduleId];
+					module.injects = standardInjects; 
+				}
+				else {
+					module.factory = moduleDefs[moduleId].factory;
+					module.injects = moduleDefs[moduleId].injects || standardInjects; 
+				}
+				transport.modules.push(module);
+			});
+		}
+		else { // Transport/C
+			transport.deps = arguments[1].slice(0);
+			removeWhere(transport.deps, function(dep) {
+				return indexOf(standardInjects, dep) >= 0;
+			});
+			
+			transport.modules.push({
+				id: arguments[0],
+				factory: arguments[2],
+				injects: arguments[1]
+			});
+		}
+		return transport;
+	};
+	
 	// Set the uri which forms the conceptual module namespace root
 	Yabble.setModuleRoot = function(path) {
+		if (!(/^http(s?):\/\//.test(path))) {
+			var href = window.location.href;
+			href = href.substr(0, href.lastIndexOf('/')+1);
+			path = combinePaths(path, href);
+		}
+		
 		if (path.length && path.charAt(path.length-1) != '/') {
 			path += '/';
 		}
+
 		_moduleRoot = path;
 	};
 	
@@ -387,23 +476,33 @@
 	};
 	
 	// Define a module per various transport specifications
-	Yabble.define = function(moduleDefs, deps) {
+	Yabble.def = Yabble.define = function() {
+		var transport = normalizeTransport.apply(null, arguments);
 		
 		var unreadyModules = [],
 			definedModules = [];
 		
-		deps = deps || [];
+		var deps = transport.deps;
 
-		forIn(moduleDefs, function(moduleId) {
-			var module = getModule(moduleId);
+		for (var i = transport.modules.length; i--;) {
+			var moduleDef = transport.modules[i],
+				moduleId = moduleDef.id,
+				module = getModule(moduleId);
+				
 			if (!module) {
 				module = _modules[moduleId] = {};
 			}
+			module.module = {
+				id: moduleId,
+				uri: resolveModuleUri(moduleId)
+			};
+			
 			module.defined = true;
 			module.deps = deps.slice(0);
-			module.factory = moduleDefs[moduleId];
+			module.injects = moduleDef.injects;
+			module.factory = moduleDef.factory;
 			definedModules.push(module);
-		}, this);
+		}
 
 		for (var i = deps.length; i--;) {
 			var moduleId = deps[i],
@@ -415,10 +514,21 @@
 		}
 		
 		if (unreadyModules.length) {
-			queueModules(unreadyModules);
+			setTimeout(function() {
+				queueModules(unreadyModules);
+			}, 0);
 		}
 		
 		fireCallbacks();
+	};
+	
+	Yabble.isKnown = function(moduleId) {
+		return getModule(moduleId) != null;
+	};
+
+	Yabble.isDefined = function(moduleId) {
+		var module = getModule(moduleId);
+		return !!(module && module.defined);
 	};
 	
 	// Do an async lazy-load of modules
@@ -428,6 +538,7 @@
 	
 	// Start an application via a main program module
 	Yabble.run = function(program, cb) {
+		program = _mainProgram = resolveModuleId(program, '');
 		Yabble.ensure([program], function(require) {
 			require(program);
 			if (cb != null) { cb(); }
@@ -436,6 +547,7 @@
 	
 	// Reset internal state. Used mostly for unit tests. 
 	Yabble.reset = function() {
+		_mainProgram = null;
 		_modules = {};
 		_callbacks = [];
 		

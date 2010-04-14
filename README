@@ -2,41 +2,72 @@ A general purpose browser-side CommonJS module loader
 
 Yabble is a general purpose browser-side CommonJS module loader. Other similar module loaders are available, but Yabble strives to be a flexible loader in a small package.
 
-** NOTE: This is an early release. See below for more information **
+To see live unit tests, visit:
+http://jbrantly.github.com/yabble/tests/index.html
+
+To see an overview of the goals, visit:
+http://blog.jbrantly.com/2010/04/introducing-yabble.html
 
 Features:
- * Compliant with Modules 1.0
+ * Compliant with Modules 1.1.1
  * Supports async XHR/eval()
    - Allows the use of non-transport-wrapped module code for quick development
  * Supports script tags with a Transport format
    - Easier debugging, potential for file concatenation
- * Includes a tool for automatically wrapping modules in a Transport format
+   - Supports Transport/D and Transport/C
  * Supports require.ensure() for lazy-loading modules
- * Small size (<500 lines, ~13kb raw, ~4kb minified, and <2kb when minified/gzipped)
+ * Passes unit tests on YUI's A-grade browsers
+ * Includes a tool for automatically wrapping modules in a Transport format
+ * Small size (<600 lines, ~15kb raw, ~5kb minified, and ~2kb when minified/gzipped)
 
 Roadmap:
  * Stability
-   - Better cross-browser compliance
-   - More unit tests
-   - Better unit testing framework
+   - Even more cross-browser testing
+   - More unit tests for Async/A
  * Features
-   - Implement support for Modules 1.1(.1)
-   - Complete support for Transport/D
-   - Implement support for Transport/C
-   - Explicit support for concatenated Transport files in loader and tooling
- * Loader
+   - Async/A error handling once its decided (maybe before)
+   - Tested support for loading from another domain (it may work now..)
+ * Documentation
+ * Tooling
+   - Currently under-developed. Not recommended to use.
    - Use loader code in tooling (no copy/paste code)
+   - Explicit support for concatenated Transport files tooling (loader should already support)   
    - Expand supported engines for tooling (node.js)
    - Better consideration for platform (line endings, encoding, etc)
 
-Notes on the current release:
+Usage:
 
-This is the first release and is currently unsuitable for any sort of production work. The loader has passed the Module 1.0 unit tests on IE 6/7 and FF 3. While complete cross-browser support is a short-term goal, this release does not offer it.
+require.setModuleRoot(path)
 
-The tooling (yabbler.js) currently supports the Rhino javascript engine and is very under-developed. It is offered as a preview of what is to come.
+   Use this to configure the root path to find modules. Think of this as a 
+   single entry in require.paths.
 
-For example usage for both the loader and the tooling, please see the Modules 1.0 unit tests.
+require.useScriptTags()
 
-To see the unit tests live, visit:
-XHR/eval - http://jbrantly.github.com/yabble/tests/modules1.0/index.html
-<script>/wrapped - http://jbrantly.github.com/yabble/tests/modules1.0/wrappedIndex.html
+   The default behavior is to use XHR+eval() and expects unwrapped modules. Call this method
+   to configure Yabble to use script tags and expect wrapped modules.
+    
+require.run(programId)
+
+   This kicks off an application using the specified module ID.
+   
+require.ensure(dependencies, callback)
+
+   See Async/A for more details. Can be used to retrieve modules and run code without using
+   require.run().
+
+See unit tests for example usage.
+
+Changelog:
+
+04-14-2010
+	- Now using QUnit for unit tests
+	- Added support for Modules 1.1.1 plus unit tests
+	- Finished support for Transport/D plus unit tests
+	- Added support for Transport/C plus unit tests
+	- Added unit tests for Async/A and fixed bugs
+	- Added unit tests for resolveModuleId and determineShallowDependencies
+
+04-12-2010
+	- Initial commit
+

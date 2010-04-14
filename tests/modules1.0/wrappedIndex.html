@@ -14,17 +14,17 @@
 			require.useScriptTags();
 			
 			var tests = [
-				['absolute', 2],
-				['cyclic', 5],
-				['determinism', 2],
-				['exactExports', 2],
-				['hasOwnProperty', 1],
-				['method', 4],
-				['missing', 2],
-				['monkeys', 2],
-				['nested', 2],
-				['relative', 2],
-				['transitive', 2]
+				['absolute', 1],
+				['cyclic', 4],
+				['determinism', 1],
+				['exactExports', 1],
+				['hasOwnProperty', 0],
+				['method', 3],
+				['missing', 1],
+				['monkeys', 1],
+				['nested', 1],
+				['relative', 1],
+				['transitive', 1]
 			];
 
 			for (var i = 0, n = tests.length; i<n; i++) {
@@ -35,9 +35,7 @@
 						stop();
 						require.reset();
 						require.setModuleRoot('wrappedTests/' + testName);
-						require.run('program', function() {
-							start();
-						});
+						require.run('program');
 					};
 				})(testName));
 
