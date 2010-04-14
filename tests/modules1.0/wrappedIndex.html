@@ -3,66 +3,51 @@
 	<head>
 		<title></title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<script type="text/javascript" src="../print.js"></script>
+		
 		<script type="text/javascript" src="../../yabble.js"></script>
+		
+		<script type="text/javascript" src="../qunit.js"></script>
+		<link rel="stylesheet" href="../qunit.css" type="text/css" media="screen" />
+		<script type="text/javascript" src="../print.js"></script>
+		
 		<script type="text/javascript">
 			require.useScriptTags();
-			require.setModuleRoot('wrappedTests/absolute');
-			require.run('program', function() {
-				
-				require.reset();
-				require.setModuleRoot('wrappedTests/cyclic');
-				require.run('program', function() {				
-				
-					require.reset();
-					require.setModuleRoot('wrappedTests/determinism');
-					require.run('program', function() {	
-					
+			
+			var tests = [
+				['absolute', 2],
+				['cyclic', 5],
+				['determinism', 2],
+				['exactExports', 2],
+				['hasOwnProperty', 1],
+				['method', 4],
+				['missing', 2],
+				['monkeys', 2],
+				['nested', 2],
+				['relative', 2],
+				['transitive', 2]
+			];
+
+			for (var i = 0, n = tests.length; i<n; i++) {
+				var testName = tests[i][0],
+					expected = tests[i][1];
+				test(testName, expected, (function(testName) {
+					return function() {
+						stop();
 						require.reset();
-						require.setModuleRoot('wrappedTests/exactExports');
-						require.run('program', function() {	
-						
-							require.reset();
-							require.setModuleRoot('wrappedTests/hasOwnProperty');
-							require.run('program', function() {	
-							
-								require.reset();
-								require.setModuleRoot('wrappedTests/method');
-								require.run('program', function() {	
-								
-									require.reset();
-									require.setModuleRoot('wrappedTests/missing');
-									require.run('program', function() {	
-									
-										require.reset();
-										require.setModuleRoot('wrappedTests/monkeys');
-										require.run('program', function() {	
-										
-											require.reset();
-											require.setModuleRoot('wrappedTests/nested');
-											require.run('program', function() {	
-											
-												require.reset();
-												require.setModuleRoot('wrappedTests/relative');
-												require.run('program', function() {	
-												
-													require.reset();
-													require.setModuleRoot('wrappedTests/transitive');
-													require.run('program', function() {	
-													
-													});	
-												});	
-											});	
-										});		
-									});		
-								});		
-							});		
-						});					
-					});
-				});
-			});
+						require.setModuleRoot('wrappedTests/' + testName);
+						require.run('program', function() {
+							start();
+						});
+					};
+				})(testName));
+
+			}
 		</script>
 	</head>
 	<body>
+		<h1 id="qunit-header">Yabble Modules/1.0 Unit Tests (Wrapped Modules)</h1>
+		<h2 id="qunit-banner"></h2>
+		<h2 id="qunit-userAgent"></h2>
+		<ol id="qunit-tests"></ol>
 	</body>
 </html>
