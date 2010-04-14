@@ -29,6 +29,8 @@
 		throw "Synchronous require() is not supported.";
 	};
 	
+	Yabble.unit = {};
+	
 	var _moduleRoot = '',
 		_modules,
 		_callbacks,
@@ -77,7 +79,7 @@
 	}
 
 	// Takes a relative path to a module and resolves it according to the reference path
-	var resolveModuleId = function(relModuleId, refPath) {
+	var resolveModuleId = Yabble.unit.resolveModuleId = function(relModuleId, refPath) {
 		if (relModuleId.charAt(0) != '.') {
 			return relModuleId;
 		}
@@ -285,7 +287,7 @@
 	
 	// Used by loadModuleByEval and by the packager. Determines shallow dependencies of
 	// a module via static analysis. This can currently break with require.ensure().
-	var determineShallowDependencies = function(moduleCode) {
+	var determineShallowDependencies = Yabble.unit.determineShallowDependencies = function(moduleCode) {
 		// TODO: account for comments
 		var deps = {}, match, unique = {};
 		
