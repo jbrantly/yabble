@@ -1,0 +1,49 @@
+{
+	"name": "yabble",
+	"description": "A general purpose browser-side CommonJS module loader",
+	"version": "0.3.0",
+	"keywords": [
+	   "loader",
+       "browser"
+	],
+	"maintainers": [
+		{
+			"name": "James Brantly",
+			"email": "james@jbrantly.com",
+			"web": "http://www.jbrantly.com" 
+		} 
+	],
+	"contributors": [
+		{
+			"name": "James Brantly",
+			"email": "james@jbrantly.com",
+			"web": "http://www.jbrantly.com" 
+		} 
+	],
+	"bugs": "http://github.com/jbrantly/yabble/issues",
+	"licenses": [
+		{
+			"type": "MIT license",
+			"url": "http://www.opensource.org/licenses/mit-license.php" 
+		} 
+	],
+	"repositories": [
+		{
+			"type": "git",
+			"url": "http://github.com/jbrantly/yabble.git" 
+		} 
+	],
+	"dependencies": {},
+	"implements": [
+		"CommonJS/Modules/1.0", 
+		"CommonJS/Modules/1.1.1", 
+		"CommonJS/Modules/Async/A", 
+		"CommonJS/Modules/Transport/C", 
+		"CommonJS/Modules/Transport/D"
+	],
+	"directories": {
+       "lib": "src/lib",
+       "bin": "local/binaries",
+       "jars": "java" 
+	}
+}

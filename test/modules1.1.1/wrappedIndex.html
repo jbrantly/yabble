@@ -4,7 +4,7 @@
 		<title></title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		
-		<script type="text/javascript" src="../../yabble.js"></script>
+		<script type="text/javascript" src="../../lib/yabble.js"></script>
 		
 		<script type="text/javascript" src="../qunit.js"></script>
 		<link rel="stylesheet" href="../qunit.css" type="text/css" media="screen" />
@@ -14,9 +14,8 @@
 			require.useScriptTags();
 			
 			var tests = [
-				['absolute', 1],
-				['cyclic', 4],
-				['relative', 1]
+				['module', 9],
+				['main', 3]
 			];
 
 			for (var i = 0, n = tests.length; i<n; i++) {
@@ -35,7 +34,7 @@
 		</script>
 	</head>
 	<body>
-		<h1 id="qunit-header">Yabble Async/A Unit Tests (Wrapped Modules)</h1>
+		<h1 id="qunit-header">Yabble Modules/1.1.1 Unit Tests (Wrapped Modules)</h1>
 		<h2 id="qunit-banner"></h2>
 		<h2 id="qunit-userAgent"></h2>
 		<ol id="qunit-tests"></ol>
