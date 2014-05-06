@@ -1,7 +1,7 @@
 {
 	"name": "yabble",
 	"description": "A general purpose browser-side CommonJS module loader",
-	"version": "0.3.0",
+	"version": "0.3.1",
 	"keywords": [
 	   "loader",
        "browser"
